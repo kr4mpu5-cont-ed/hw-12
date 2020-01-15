@@ -1,0 +1,25 @@
+{
+  "name": "hw-12",
+  "version": "1.0.0",
+  "description": "Assignment: Architect and build a solution for managing a company's employees using node, inquirer, and MySQL.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kr4mpu5/hw-12.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kr4mpu5/hw-12/issues"
+  },
+  "homepage": "https://github.com/kr4mpu5/hw-12#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^7.0.3",
+    "mysql": "^2.17.1"
+  }
+}
