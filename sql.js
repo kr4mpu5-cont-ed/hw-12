@@ -1,20 +1,4 @@
-// * You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
-
-// remove
-// -- source file: user.js --
-// const getName = () => {
-//   return 'Jim';
-// };
-
-// exports.getName = getName;
-// --
-
-// -- calling file: index.js --
-// const user = require('./user');
-// console.log(`User: ${user.getName()}`);
-// --
-// end remove
-
+// todo: remove * You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
 
 // RETRIEVE ALL DATA
 const getAllTableData = () => {

@@ -1,4 +1,6 @@
 _reference/*
+documentation/err/hw-12_emsDB_err.mov
 node_modules
 .DS_Store
 README.old.md
+config/dbpassword.config

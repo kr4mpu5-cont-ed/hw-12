@@ -1,9 +1,8 @@
-// TODO: remove db password from connection??
-
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const sqlqueries = require('./sql');
 const cTable = require('console.table');
+const config = require('./config/dbpassword.config');
 
 
 // console.log('Employee Management System');
@@ -28,15 +27,9 @@ console.log(`,-----------------------------------------------------.
 
 var connection = mysql.createConnection({
   host: "localhost",
-
-  // Your port; if not 3306
   port: 3306,
-
-  // Your username
   user: "root",
-
-  // Your password
-  password: "mine-sequester-lingua",
+  password: config.sqlPassword(),
   database: "emsDB"
 });
 
@@ -65,7 +58,6 @@ function start() {
           "Exit"]
     })
     .then(function(answer) {
-      // based on their answer, either call the bid or the post functions
       if (answer.userAction === "View All Employees") {
         viewAllEmployees();
       }
@@ -161,7 +153,7 @@ function removeRole() {
   //run query
 }
 
-// function to handle posting new items up for auction
+// todo: remove
 function postAuction() {
   // prompt for info about the item being put up for auction
   inquirer
