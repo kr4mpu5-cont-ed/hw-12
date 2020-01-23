@@ -44,19 +44,26 @@ const viewDepartmentBudgets = () => {
 };
 
 const addEmployee = (first, last, roleid, managerid) => {
-    return `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${first}', '${last}', ${roleid}, ${managerid});`;
+    return `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+            VALUES ('${first}', '${last}', ${roleid}, ${managerid});`;
 };
 
 const addDepartment = (name) => {
-    return `INSERT INTO department (name) VALUES ('${name}');`;
+    return `INSERT INTO department (name) \
+            VALUES ('${name}');`;
 };
 
 const addRole = (title, salary, departmentid) => {
-    return `INSERT INTO role (title, salary, department_id) VALUES ('${title}', '${salary}', '${departmentid}');`;
+    return `INSERT INTO role (title, salary, department_id)
+            VALUES ('${title}', '${salary}', '${departmentid}');`;
 };
 
-const updateEmployeeRole = () => {
-    return `not implemented`;
+const updateEmployeeRole = (employeeid, roleid) => {
+    return `UPDATE employee e
+            SET
+                e.role_id = ${roleid}
+            WHERE
+                e.id = ${employeeid};`;
 };
 
 const updateEmployeeManager = () => {

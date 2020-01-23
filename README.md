@@ -6,9 +6,9 @@ Assignment: Architect and build a solution for managing a company's employees us
 * [ ] Functional application.
 * [x] GitHub repository with a unique name and a README describing the project.
 * The command-line application should allow users to:
-  * [ ] Add departments, roles, employees
-  * [x] View departments, roles, employees
-  * [ ] Update employee roles
+  * [x] Add employees, departments, roles
+  * [x] View employees, departments, roles
+  * [x] Update employee roles
 
 ## Bonus
 * The command-line application should allow users to:

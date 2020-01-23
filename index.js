@@ -43,7 +43,7 @@ function findRoleId(namedKey, objArray) {
   }
 }
 
-function findEmployeeIdToActOn(namedKey, objArray) {
+function findEmployeeId(namedKey, objArray) {
   for (var i = 0; i < objArray.length; i++) {
     if (objArray[i].first_name + ' ' + objArray[i].last_name === namedKey.toString()) {
       return objArray[i].id;
@@ -269,8 +269,7 @@ function addEmployee() {
   ]).then(function (answer) {
 
     var newRoleId = findRoleId(answer.newRole, roleListObj).id;
-
-    var newManagerId = (findEmployeeIdToActOn(answer.newManager, employeeListObj)) ? findEmployeeIdToActOn(answer.newManager, employeeListObj) : null;
+    var newManagerId = (findEmployeeId(answer.newManager, employeeListObj)) ? findEmployeeId(answer.newManager, employeeListObj) : null;
 
     connection.query(sqlqueries.addEmployee(answer.newFirstName, answer.newLastName, newRoleId, newManagerId), function (err, results) {
       if (err) throw err;
@@ -304,7 +303,6 @@ function addDepartment() {
 }
 
 function addRole() {
-  // return `INSERT INTO role (title, salary, department_id) VALUES ('${title}', '${salary}', '${departmentid}');`;
   inquirer.prompt([
     {
       message: "What is the title?",
@@ -349,9 +347,31 @@ function addRole() {
 
 }
 
-// todo: implement
 function updateEmployeeRole() {
-  console.log('updateEmployeeRole');
+  inquirer.prompt([
+    {
+      message: "Which employee do you want to update?",
+      name: "selectedEmployee",
+      type: "list",
+      choices: employeeList
+    },
+    {
+      message: "Select their new role.",
+      name: "selectedRole",
+      type: "list",
+      choices: roleList
+    }
+  ]).then(function (answer) {
+
+    var employeeIdToUpdate = (findEmployeeId(answer.selectedEmployee, employeeListObj)) ? findEmployeeId(answer.selectedEmployee, employeeListObj) : null;
+    var newRoleId = findRoleId(answer.selectedRole, roleListObj).id;
+
+    connection.query(sqlqueries.updateEmployeeRole(employeeIdToUpdate, newRoleId), function (err, results) {
+      if (err) throw err;
+      console.log('The role for ' + answer.selectedEmployee + ' has been changed to ' + answer.selectedRole + '.');
+      start();
+    });
+  });
 }
 
 // todo: implement
@@ -369,7 +389,7 @@ function removeEmployee() {
     if (answer.employeeName === 'None') {
       start();
     } else {
-      var employeeIdToRemove = (findEmployeeIdToActOn(answer.employeeName, employeeListObj)) ? findEmployeeIdToActOn(answer.employeeName, employeeListObj) : null;
+      var employeeIdToRemove = (findEmployeeId(answer.employeeName, employeeListObj)) ? findEmployeeId(answer.employeeName, employeeListObj) : null;
       connection.query(sqlqueries.removeEmployee(employeeIdToRemove), function (err, results) {
         if (err) throw err;
         console.log(answer.employeeName + ' removed from the database.')

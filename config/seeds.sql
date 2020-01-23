@@ -41,7 +41,7 @@ USE emsDB;
 SELECT * FROM employee;
 
 -- ------------------------
--- GET DATA
+-- VIEW DATA
 -- ------------------------
 
 -- viewAllEmployees
@@ -119,6 +119,20 @@ FROM
     contacts
 GROUP BY email
 HAVING COUNT(email) > 1;
+
+-- ------------------------
+-- UPDATE QUERIES
+-- ------------------------
+
+USE emsDB;
+UPDATE employee e
+    SET
+        e.role_id = ?
+    WHERE
+        e.id = ?;
+
+use emsdb; select * from employee where id = 12;
+
 
 -- ------------------------
 -- UTILITY QUERIES
