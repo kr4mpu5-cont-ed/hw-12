@@ -249,8 +249,11 @@ function updateEmployeeManager() {
 }
 
 function viewAllRoles() {
-  console.log('viewAllRoles');
-  //run query
+  connection.query(sqlqueries.viewAllRoles(), function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    start();
+  });
 }
 
 function addRole() {

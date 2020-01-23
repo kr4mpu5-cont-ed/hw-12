@@ -44,7 +44,9 @@ const updateEmployeeManager = () => {
 };
 
 const viewAllRoles = () => {
-
+    return `SELECT title
+            FROM role
+            ORDER BY title ASC;`;
 };
 
 const addRole = () => {

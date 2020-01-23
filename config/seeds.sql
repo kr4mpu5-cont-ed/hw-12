@@ -22,6 +22,10 @@ INSERT INTO role (title, salary, department_id) VALUES ('Lawyer', '190000', '4')
 
 USE emsDB;
 SELECT * FROM role;
+USE emsDB;
+SELECT title
+    FROM role
+    ORDER BY department_id ASC, title ASC;
 
 USE emsDB;
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('Ashley', 'Rodriguez', 3, null);
