@@ -43,7 +43,7 @@ SELECT * FROM employee;
 -- viewAllEmployees
 USE emsDB;
 SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name, r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
-    FROM Employee e
+    FROM employee e
         LEFT JOIN employee m ON m.id = e.manager_id
         JOIN Role r ON e.role_id = r.id
         JOIN Department d ON d.id = r.department_id
@@ -52,24 +52,37 @@ SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name, r.tit
 -- viewAllEmployeesByDepartment
 USE emsDB;
 SELECT d.name, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
-    FROM Employee e
+    FROM employee e
         LEFT JOIN employee m ON m.id = e.manager_id
         JOIN Role r ON e.role_id = r.id
         JOIN Department d ON d.id = r.department_id
-    ORDER BY d.name;
+    ORDER BY d.name ASC;
 
 -- viewAllEmployeesByManager
 USE emsDB;
 SELECT IFNULL(CONCAT(m.first_name, ' ', m.last_name), '') AS 'Manager', CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name, r.title, d.name, r.salary
-    FROM Employee e
+    FROM employee e
         LEFT JOIN employee m ON m.id = e.manager_id
         JOIN Role r ON e.role_id = r.id
         JOIN Department d ON d.id = r.department_id
     ORDER BY m.first_name ASC;
 
--- addEmployee
+-- queries for addEmployee()
+USE emsDB;
+SELECT e.id, e.first_name, e.last_name
+    FROM employee e
+    ORDER BY e.first_name ASC;
+
+USE emsDB;
+SELECT r.id, r.title
+    FROM role r
+    ORDER BY r.title ASC;
+
 
 -- removeEmployee
+USE emsDB;
+DELETE FROM employee where id = ?;
+
 
 -- updateEmployeeRole
 

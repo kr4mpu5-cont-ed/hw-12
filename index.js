@@ -1,11 +1,12 @@
+// todo: move init functions to start? am i re-initializing after every action?
+
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const sqlqueries = require('./sql');
 const cTable = require('console.table');
 const config = require('./config/dbpassword.config');
 
-
-// console.log('Employee Management System');
+//#region
 console.log(`,-----------------------------------------------------.
 |                                                     |
 |     _____                 _                         |
@@ -24,6 +25,13 @@ console.log(`,-----------------------------------------------------.
 |                                                     |
 \`-----------------------------------------------------'
 `);
+//#endregion
+
+let roleList = [];
+let roleListObj = {};
+// console.log(typeof roleList);
+let managerList = [];
+let managerListObj = {};
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -33,10 +41,41 @@ var connection = mysql.createConnection({
   database: "emsDB"
 });
 
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) throw err;
-  start();
+  // start();
+  init();
 });
+
+// populate lists
+function init() {
+  connection.query(sqlqueries.utilGetRoleIdsTitles(), function (err, results) {
+    if (err) throw err;
+    for (let i = 0; i < results.length; i++) {
+      roleList.push(results[i].title);
+      // console.log(results[i].id);
+    }
+    // console.log(typeof roleList);
+
+    // for (var key in results) {
+    //   console.log(key); // logs keys in myObject
+    //   console.log(results[key]); // logs values in myObject
+    // }
+
+    roleListObj = results;
+  });
+
+  connection.query(sqlqueries.utilGetEmployeeIdsNames(), function (err, results) {
+    if (err) throw err;
+    managerList.push('None');
+    for (let i = 0; i < results.length; i++) {
+      managerList.push(results[i].first_name + ' ' + results[i].last_name);
+    }
+    managerListObj = results;
+  });
+
+  start();
+}
 
 function start() {
   inquirer
@@ -45,47 +84,47 @@ function start() {
       type: "list",
       message: "What would you like to do?",
       choices: [
-          "View All Employees",
-          "View All Employees By Department",
-          "View All Employees By Manager",
-          "Add Employee",
-          "Remove Employee",
-          "Update Employee Role",
-          "Update Employee Manager",
-          "View All Roles",
-          "Add Role",
-          "Remove Role",
-          "Exit"]
+        "View All Employees",
+        "View All Employees By Department",
+        "View All Employees By Manager",
+        "Add Employee",
+        "Remove Employee",
+        "Update Employee Role",
+        "Update Employee Manager",
+        "View All Roles",
+        "Add Role",
+        "Remove Role",
+        "Exit"]
     })
-    .then(function(answer) {
+    .then(function (answer) {
       if (answer.userAction === "View All Employees") {
         viewAllEmployees();
       }
-      else if(answer.userAction === "View All Employees By Department") {
+      else if (answer.userAction === "View All Employees By Department") {
         viewAllEmployeesByDepartment();
       }
-      else if(answer.userAction === "View All Employees By Manager") {
+      else if (answer.userAction === "View All Employees By Manager") {
         viewAllEmployeesByManager();
       }
-      else if(answer.userAction === "Add Employee") {
+      else if (answer.userAction === "Add Employee") {
         addEmployee();
       }
-      else if(answer.userAction === "Remove Employee") {
+      else if (answer.userAction === "Remove Employee") {
         removeEmployee();
       }
-      else if(answer.userAction === "Update Employee Role") {
+      else if (answer.userAction === "Update Employee Role") {
         updateEmployeeRole();
       }
-      else if(answer.userAction === "Update Employee Manager") {
+      else if (answer.userAction === "Update Employee Manager") {
         updateEmployeeManager();
       }
-      else if(answer.userAction === "View All Roles") {
+      else if (answer.userAction === "View All Roles") {
         viewAllRoles();
       }
-      else if(answer.userAction === "Add Role") {
+      else if (answer.userAction === "Add Role") {
         addRole();
       }
-      else if(answer.userAction === "Remove Role") {
+      else if (answer.userAction === "Remove Role") {
         removeRole();
       }
       else {
@@ -95,7 +134,7 @@ function start() {
 }
 
 function viewAllEmployees() {
-  connection.query(sqlqueries.getAllTableData(), function(err, results) {
+  connection.query(sqlqueries.viewAllEmployees(), function (err, results) {
     if (err) throw err;
     console.table(results);
     start();
@@ -103,29 +142,103 @@ function viewAllEmployees() {
 }
 
 function viewAllEmployeesByDepartment() {
-  connection.query(sqlqueries.viewAllEmployeesByDepartment(), function(err, results) {
+  connection.query(sqlqueries.viewAllEmployeesByDepartment(), function (err, results) {
     if (err) throw err;
     console.table(results);
     start();
-  })
+  });
 }
 
 function viewAllEmployeesByManager() {
-  connection.query(sqlqueries.viewAllEmployeesByManager(), function(err, results) {
+  connection.query(sqlqueries.viewAllEmployeesByManager(), function (err, results) {
     if (err) throw err;
     console.table(results);
     start();
-  })
+  });
 }
 
 function addEmployee() {
-  console.log('addEmployee');
-  //run query
+  inquirer.prompt([
+    {
+      message: "What is the employee's first name?",
+      name: "newFirstName",
+      validate: function validateFirstName(name) {
+        return name !== '';
+      },
+      type: "input",
+
+    },
+    {
+      message: "What is the employee's last name?",
+      name: "newLastName",
+      validate: function validateLastName(name) {
+        return name !== '';
+      },
+      type: "input"
+    },
+    {
+      message: "What is the employee's role?",
+      name: "newRole",
+      type: "list",
+      choices: function () {
+        var choiceArray = [];
+        for (var key in roleListObj) {
+          choiceArray.push(roleListObj[key].title);
+        }
+        return choiceArray;
+      }
+    },
+    {
+      message: "Who is the employee's manager?",
+      name: "newManager",
+      type: "list",
+      choices: managerList
+    }
+  ]).then(function (answer) {
+
+    function findRoleId(namedKey, objArray) {
+      for (var i = 0; i < objArray.length; i++) {
+        if (objArray[i].title === namedKey) {
+          return objArray[i];
+        }
+      }
+    }
+
+    function findManagerId(namedKey, objArray) {
+      for (var i = 0; i < objArray.length; i++) {
+        if (objArray[i].first_name + ' ' + objArray[i].last_name === namedKey.toString()) {
+          return objArray[i].id;
+        }
+      }
+    }
+
+    var newRoleId = findRoleId(answer.newRole, roleListObj).id;
+
+    var newManagerId = (findManagerId(answer.newManager, managerListObj)) ? findManagerId(answer.newManager, managerListObj) : null;
+
+    connection.query(sqlqueries.addEmployee(answer.newFirstName, answer.newLastName, newRoleId, newManagerId), function (err, results) {
+      if (err) throw err;
+      console.log('Added ' + answer.newFirstName + ' ' + answer.newLastName + ' to the database.')
+      init();
+    });
+
+  });
+
 }
 
 function removeEmployee() {
   console.log('removeEmployee');
-  //run query
+  inquirer.prompt({
+
+  }).then(function (answer) {
+    connection.query(sqlqueries.removeEmployee(EMPLOYEE__ID), function (err, results) {
+      if (err) throw err;
+      console.log(NAME_OF_PERSON + 'removed from the database.')
+      init();
+    });
+
+  });
+
 }
 
 function updateEmployeeRole() {
@@ -153,6 +266,9 @@ function removeRole() {
   //run query
 }
 
+// =======================
+// todo: remove code below
+// =======================
 // todo: remove
 function postAuction() {
   // prompt for info about the item being put up for auction
@@ -172,7 +288,7 @@ function postAuction() {
         name: "startingBid",
         type: "input",
         message: "What would you like your starting bid to be?",
-        validate: function(value) {
+        validate: function (value) {
           if (isNaN(value) === false) {
             return true;
           }
@@ -180,7 +296,7 @@ function postAuction() {
         }
       }
     ])
-    .then(function(answer) {
+    .then(function (answer) {
       // when finished prompting, insert a new item into the db with that info
       connection.query(
         "INSERT INTO auctions SET ?",
@@ -190,7 +306,7 @@ function postAuction() {
           starting_bid: answer.startingBid || 0,
           highest_bid: answer.startingBid || 0
         },
-        function(err) {
+        function (err) {
           if (err) throw err;
           console.log("Your auction was created successfully!");
           // re-prompt the user for if they want to bid or post
@@ -200,9 +316,10 @@ function postAuction() {
     });
 }
 
+// todo: remove
 function bidAuction() {
   // query the database for all items being auctioned
-  connection.query("SELECT * FROM auctions", function(err, results) {
+  connection.query("SELECT * FROM auctions", function (err, results) {
     if (err) throw err;
     // once you have the items, prompt the user for which they'd like to bid on
     inquirer
@@ -210,7 +327,7 @@ function bidAuction() {
         {
           name: "choice",
           type: "rawlist",
-          choices: function() {
+          choices: function () {
             var choiceArray = [];
             for (var i = 0; i < results.length; i++) {
               choiceArray.push(results[i].item_name);
@@ -225,7 +342,7 @@ function bidAuction() {
           message: "How much would you like to bid?"
         }
       ])
-      .then(function(answer) {
+      .then(function (answer) {
         // get the information of the chosen item
         var chosenItem;
         for (var i = 0; i < results.length; i++) {
@@ -247,7 +364,7 @@ function bidAuction() {
                 id: chosenItem.id
               }
             ],
-            function(error) {
+            function (error) {
               if (error) throw err;
               console.log("Bid placed successfully!");
               start();
