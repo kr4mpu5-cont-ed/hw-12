@@ -6,7 +6,7 @@ const sqlqueries = require('./sql');
 const cTable = require('console.table');
 const config = require('./config/dbpassword.config');
 
-//#region
+//#region banner
 console.log(`,-----------------------------------------------------.
 |                                                     |
 |     _____                 _                         |
@@ -27,6 +27,7 @@ console.log(`,-----------------------------------------------------.
 `);
 //#endregion
 
+//#region globals
 let roleList = [];
 let roleListObj = {};
 // console.log(typeof roleList);
@@ -48,6 +49,7 @@ function findEmployeeIdToActOn(namedKey, objArray) {
     }
   }
 }
+//#endregion
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -64,6 +66,7 @@ connection.connect(function (err) {
 });
 
 // populate lists
+// todo: rename to populate lists? refresh lists?
 function init() {
   connection.query(sqlqueries.utilGetRoleIdsTitles(), function (err, results) {
     if (err) throw err;
@@ -92,33 +95,56 @@ function start() {
       type: "list",
       message: "What would you like to do?",
       choices: [
-        "View All Employees",
-        "View All Employees By Department",
-        "View All Employees By Manager",
-        "Add Employee",
-        "Remove Employee",
-        "Update Employee Role",
-        "Update Employee Manager",
-        "View All Roles",
-        "Add Role",
-        "Remove Role",
-        "Exit"]
+        "View Employees", // required
+        "View Employees by Manager", // bonus
+        "View Employees by Department", // from demo app
+        "View Departments", // required
+        "View Roles", // required
+        "View Departmental Budgets", // bonus
+        new inquirer.Separator(),
+        "Add Employee", // required
+        "Add Department", // required
+        "Add Role", // required
+        new inquirer.Separator(),
+        "Update Employee Role", // required
+        "Update Employee Manager", // bonus
+        new inquirer.Separator(),
+        "Remove Employee", // bonus
+        "Remove Department", // bonus
+        "Remove Role", // bonus
+        new inquirer.Separator(),
+        "Exit",
+        new inquirer.Separator()
+      ]
     })
+// todo: refactor function names to match ui
     .then(function (answer) {
-      if (answer.userAction === "View All Employees") {
-        viewAllEmployees();
+      if (answer.userAction === "View Employees") {
+        viewEmployees();
       }
-      else if (answer.userAction === "View All Employees By Department") {
-        viewAllEmployeesByDepartment();
+      else if (answer.userAction === "View Employees by Manager") {
+        viewEmployeesByManager();
       }
-      else if (answer.userAction === "View All Employees By Manager") {
-        viewAllEmployeesByManager();
+      else if (answer.userAction === "View Employees by Department") {
+        viewEmployeesByDepartment();
+      }
+      else if (answer.userAction === "View Departments") {
+        viewDepartments();
+      }
+      else if (answer.userAction === "View Roles") {
+        viewRoles();
+      }
+      else if (answer.userAction === "View Department Budgets") {
+        viewDepartmentBudgets();
       }
       else if (answer.userAction === "Add Employee") {
         addEmployee();
       }
-      else if (answer.userAction === "Remove Employee") {
-        removeEmployee();
+      else if (answer.userAction === "Add Department") {
+        addDepartment();
+      }
+      else if (answer.userAction === "Add Role") {
+        addRole();
       }
       else if (answer.userAction === "Update Employee Role") {
         updateEmployeeRole();
@@ -126,11 +152,11 @@ function start() {
       else if (answer.userAction === "Update Employee Manager") {
         updateEmployeeManager();
       }
-      else if (answer.userAction === "View All Roles") {
-        viewAllRoles();
+      else if (answer.userAction === "Remove Employee") {
+        removeEmployee();
       }
-      else if (answer.userAction === "Add Role") {
-        addRole();
+      else if (answer.userAction === "Remove Department") {
+        removeDepartment();
       }
       else if (answer.userAction === "Remove Role") {
         removeRole();
@@ -141,29 +167,49 @@ function start() {
     });
 }
 
-function viewAllEmployees() {
-  connection.query(sqlqueries.viewAllEmployees(), function (err, results) {
+function viewEmployees() {
+  connection.query(sqlqueries.viewEmployees(), function (err, results) {
     if (err) throw err;
     console.table(results);
     start();
   });
 }
 
-function viewAllEmployeesByDepartment() {
-  connection.query(sqlqueries.viewAllEmployeesByDepartment(), function (err, results) {
+function viewEmployeesByManager() {
+  connection.query(sqlqueries.viewEmployeesByManager(), function (err, results) {
     if (err) throw err;
     console.table(results);
     start();
   });
 }
 
-function viewAllEmployeesByManager() {
-  connection.query(sqlqueries.viewAllEmployeesByManager(), function (err, results) {
+function viewEmployeesByDepartment() {
+  connection.query(sqlqueries.viewEmployeesByDepartment(), function (err, results) {
     if (err) throw err;
     console.table(results);
     start();
   });
 }
+
+function viewDepartments() {
+  connection.query(sqlqueries.viewDepartments(), function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    start();
+  })
+}
+
+function viewRoles() {
+  connection.query(sqlqueries.viewRoles(), function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    start();
+  });
+}
+
+// todo: implement
+function viewDepartmentBudgets() {
+  console.log('viewDepartmentBudgets');}
 
 function addEmployee() {
   inquirer.prompt([
@@ -218,6 +264,26 @@ function addEmployee() {
 
 }
 
+// todo: implement
+function addDepartment() {
+  console.log('addDepartment');
+}
+
+// todo: implement
+function addRole() {
+  console.log('addRole');
+}
+
+// todo: implement
+function updateEmployeeRole() {
+  console.log('updateEmployeeRole');
+}
+
+// todo: implement
+function updateEmployeeManager() {
+  console.log('updateEmployeeManager');
+}
+
 function removeEmployee() {
   inquirer.prompt({
     message: "Which employee do you want to remove?",
@@ -238,32 +304,14 @@ function removeEmployee() {
   });
 }
 
-function updateEmployeeRole() {
-  console.log('updateEmployeeRole');
-  //run query
+// todo: implement
+function removeDepartment() {
+  console.log('removeDepartment');
 }
 
-function updateEmployeeManager() {
-  console.log('updateEmployeeManager');
-  //run query
-}
-
-function viewAllRoles() {
-  connection.query(sqlqueries.viewAllRoles(), function (err, results) {
-    if (err) throw err;
-    console.table(results);
-    start();
-  });
-}
-
-function addRole() {
-  console.log('addRole');
-  //run query
-}
-
+// todo: implement
 function removeRole() {
   console.log('removeRole');
-  //run query
 }
 
 // =======================
