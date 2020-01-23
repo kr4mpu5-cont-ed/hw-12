@@ -30,8 +30,24 @@ console.log(`,-----------------------------------------------------.
 let roleList = [];
 let roleListObj = {};
 // console.log(typeof roleList);
-let managerList = [];
-let managerListObj = {};
+let employeeList = [];
+let employeeListObj = {};
+
+function findRoleId(namedKey, objArray) {
+  for (var i = 0; i < objArray.length; i++) {
+    if (objArray[i].title === namedKey) {
+      return objArray[i];
+    }
+  }
+}
+
+function findEmployeeIdToActOn(namedKey, objArray) {
+  for (var i = 0; i < objArray.length; i++) {
+    if (objArray[i].first_name + ' ' + objArray[i].last_name === namedKey.toString()) {
+      return objArray[i].id;
+    }
+  }
+}
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -53,25 +69,17 @@ function init() {
     if (err) throw err;
     for (let i = 0; i < results.length; i++) {
       roleList.push(results[i].title);
-      // console.log(results[i].id);
     }
-    // console.log(typeof roleList);
-
-    // for (var key in results) {
-    //   console.log(key); // logs keys in myObject
-    //   console.log(results[key]); // logs values in myObject
-    // }
-
     roleListObj = results;
   });
 
   connection.query(sqlqueries.utilGetEmployeeIdsNames(), function (err, results) {
     if (err) throw err;
-    managerList.push('None');
+    employeeList.push('None');
     for (let i = 0; i < results.length; i++) {
-      managerList.push(results[i].first_name + ' ' + results[i].last_name);
+      employeeList.push(results[i].first_name + ' ' + results[i].last_name);
     }
-    managerListObj = results;
+    employeeListObj = results;
   });
 
   start();
@@ -192,29 +200,13 @@ function addEmployee() {
       message: "Who is the employee's manager?",
       name: "newManager",
       type: "list",
-      choices: managerList
+      choices: employeeList
     }
   ]).then(function (answer) {
 
-    function findRoleId(namedKey, objArray) {
-      for (var i = 0; i < objArray.length; i++) {
-        if (objArray[i].title === namedKey) {
-          return objArray[i];
-        }
-      }
-    }
-
-    function findManagerId(namedKey, objArray) {
-      for (var i = 0; i < objArray.length; i++) {
-        if (objArray[i].first_name + ' ' + objArray[i].last_name === namedKey.toString()) {
-          return objArray[i].id;
-        }
-      }
-    }
-
     var newRoleId = findRoleId(answer.newRole, roleListObj).id;
 
-    var newManagerId = (findManagerId(answer.newManager, managerListObj)) ? findManagerId(answer.newManager, managerListObj) : null;
+    var newManagerId = (findEmployeeIdToActOn(answer.newManager, employeeListObj)) ? findEmployeeIdToActOn(answer.newManager, employeeListObj) : null;
 
     connection.query(sqlqueries.addEmployee(answer.newFirstName, answer.newLastName, newRoleId, newManagerId), function (err, results) {
       if (err) throw err;
@@ -227,18 +219,23 @@ function addEmployee() {
 }
 
 function removeEmployee() {
-  console.log('removeEmployee');
   inquirer.prompt({
-
+    message: "Which employee do you want to remove?",
+    name: "employeeName",
+    type: "list",
+    choices: employeeList
   }).then(function (answer) {
-    connection.query(sqlqueries.removeEmployee(EMPLOYEE__ID), function (err, results) {
-      if (err) throw err;
-      console.log(NAME_OF_PERSON + 'removed from the database.')
-      init();
-    });
-
+    if (answer.employeeName === 'None') {
+      start();
+    } else {
+      var employeeIdToRemove = (findEmployeeIdToActOn(answer.employeeName, employeeListObj)) ? findEmployeeIdToActOn(answer.employeeName, employeeListObj) : null;
+      connection.query(sqlqueries.removeEmployee(employeeIdToRemove), function (err, results) {
+        if (err) throw err;
+        console.log(answer.employeeName + ' removed from the database.')
+        init();
+      });
+    }
   });
-
 }
 
 function updateEmployeeRole() {
