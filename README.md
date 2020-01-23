@@ -3,7 +3,7 @@
 Assignment: Architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
 
 ## Minimum Requirements
-* [ ] Functional application.
+* [x] Functional application.
 * [x] GitHub repository with a unique name and a README describing the project.
 * The command-line application should allow users to:
   * [x] Add employees, departments, roles
