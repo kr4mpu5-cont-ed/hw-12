@@ -66,8 +66,12 @@ const updateEmployeeRole = (employeeid, roleid) => {
                 e.id = ${employeeid};`;
 };
 
-const updateEmployeeManager = () => {
-    return `not implemented`;
+const updateEmployeeManager = (managerid, employeeid) => {
+    return `UPDATE employee e
+            SET
+                e.manager_id = ${managerid}
+            WHERE
+                e.id = ${employeeid};`;
 };
 
 const removeEmployee = (employeeid) => {

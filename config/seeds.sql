@@ -131,7 +131,16 @@ UPDATE employee e
     WHERE
         e.id = ?;
 
-use emsdb; select * from employee where id = 12;
+USE emsdb; SELECT * FROM employee WHERE id = 12;
+
+USE emsDB;
+UPDATE employee e
+    SET
+        e.manager_id = ?
+    WHERE
+        e.id = ?;
+
+USE emsdb; SELECT * FROM employee WHERE id = 12;
 
 
 -- ------------------------

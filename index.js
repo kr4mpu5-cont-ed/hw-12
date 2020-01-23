@@ -374,10 +374,38 @@ function updateEmployeeRole() {
   });
 }
 
-// todo: implement
 function updateEmployeeManager() {
-  console.log('updateEmployeeManager');
-}
+  inquirer.prompt([
+    {
+      message: "Which employee do you want to update?",
+      name: "selectedEmployee",
+      type: "list",
+      choices: employeeList
+    },
+    {
+      message: "Select their new manager.",
+      name: "selectedManager",
+      type: "list",
+      choices: employeeList
+    }
+  ]).then(function (answer) {
+
+    var employeeIdToUpdate = (findEmployeeId(answer.selectedEmployee, employeeListObj)) ? findEmployeeId(answer.selectedEmployee, employeeListObj) : null;
+
+    if (answer.selectedManager === answer.selectedEmployee) {
+      newManagerId = null;
+    } else if (findEmployeeId(answer.selectedManager, employeeListObj)) {
+      newManagerId = findEmployeeId(answer.selectedManager, employeeListObj);
+    } else {
+      newManagerId = null;
+    }
+
+    connection.query(sqlqueries.updateEmployeeManager(newManagerId, employeeIdToUpdate), function (err, results) {
+      if (err) throw err;
+      console.log('The manager for ' + answer.selectedEmployee + ' has been changed to ' + answer.selectedManager + '.');
+      start();
+    });
+  });}
 
 function removeEmployee() {
   inquirer.prompt({
