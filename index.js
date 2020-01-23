@@ -30,9 +30,10 @@ console.log(`,-----------------------------------------------------.
 //#region globals
 let roleList = [];
 let roleListObj = {};
-// console.log(typeof roleList);
 let employeeList = [];
 let employeeListObj = {};
+let departmentList = [];
+let departmentListObj = {};
 
 function findRoleId(namedKey, objArray) {
   for (var i = 0; i < objArray.length; i++) {
@@ -46,6 +47,14 @@ function findEmployeeIdToActOn(namedKey, objArray) {
   for (var i = 0; i < objArray.length; i++) {
     if (objArray[i].first_name + ' ' + objArray[i].last_name === namedKey.toString()) {
       return objArray[i].id;
+    }
+  }
+}
+
+function findDepartmentId(namedKey, objArray) {
+  for (var i = 0; i < objArray.length; i++) {
+    if (objArray[i].name === namedKey) {
+      return objArray[i];
     }
   }
 }
@@ -85,6 +94,14 @@ function init() {
     employeeListObj = results;
   });
 
+  connection.query(sqlqueries.utilGetDepartmentIdsNames(), function (err, results) {
+    if (err) throw err;
+    for (let i = 0; i < results.length; i++) {
+      departmentList.push(results[i].name);
+    }
+    departmentListObj = results;
+  })
+ 
   start();
 }
 
@@ -209,7 +226,8 @@ function viewRoles() {
 
 // todo: implement
 function viewDepartmentBudgets() {
-  console.log('viewDepartmentBudgets');}
+  console.log('viewDepartmentBudgets');
+}
 
 function addEmployee() {
   inquirer.prompt([
@@ -264,14 +282,71 @@ function addEmployee() {
 
 }
 
-// todo: implement
 function addDepartment() {
-  console.log('addDepartment');
+  inquirer.prompt([
+    {
+      message: "What is the department name?",
+      name: "newDepartmentName",
+      validate: function validateFirstName(newDepartmentName) {
+        return newDepartmentName !== '';
+      },
+      type: "input",
+    }
+  ]).then(function (answer) {
+    connection.query(sqlqueries.addDepartment(answer.newDepartmentName), function (err, results) {
+      if (err) throw err;
+      console.log(answer.newDepartmentName + ' added to the database.')
+      init();
+    });
+
+  });
+
 }
 
-// todo: implement
 function addRole() {
-  console.log('addRole');
+  // return `INSERT INTO role (title, salary, department_id) VALUES ('${title}', '${salary}', '${departmentid}');`;
+  inquirer.prompt([
+    {
+      message: "What is the title?",
+      name: "newTitle",
+      validate: function validateFirstName(newTitle) {
+        return newTitle !== '';
+      },
+      type: "input",
+
+    },
+    {
+      message: "What is the salary?",
+      name: "newSalary",
+      validate: function validateLastName(newSalary) {
+        return newSalary !== '';
+      },
+      type: "input"
+    },
+    {
+      message: "Select a department:",
+      name: "newDepartment",
+      type: "list",
+      choices: function () {
+        var choiceArray = [];
+        for (var key in departmentListObj) {
+          choiceArray.push(departmentListObj[key].name);
+        }
+        return choiceArray;
+      }
+    }
+  ]).then(function (answer) {
+
+    var newRoleId = findDepartmentId(answer.newDepartment, departmentListObj).id;
+
+    connection.query(sqlqueries.addRole(answer.newTitle, answer.newSalary, newRoleId, newRoleId), function (err, results) {
+      if (err) throw err;
+      console.log(answer.newTitle + ' added to the database.')
+      init();
+    });
+
+  });
+
 }
 
 // todo: implement

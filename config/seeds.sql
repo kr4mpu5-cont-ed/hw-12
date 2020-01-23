@@ -46,7 +46,7 @@ SELECT * FROM employee;
 
 -- viewAllEmployees
 USE emsDB;
-SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name, r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
+SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name AS 'Department', r.title, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
     FROM employee e
         LEFT JOIN employee m ON m.id = e.manager_id
         JOIN Role r ON e.role_id = r.id
@@ -71,6 +71,59 @@ SELECT IFNULL(CONCAT(m.first_name, ' ', m.last_name), '') AS 'Manager', CONCAT(e
         JOIN Department d ON d.id = r.department_id
     ORDER BY m.first_name ASC;
 
+-- viewDepartments
+USE emsDB;
+SELECT name AS 'Department Name'
+        FROM department
+        ORDER BY name ASC;
+
+-- viewDepartmentBudgets
+USE emsDB;
+SELECT department_id, SUM(salary)
+    FROM role
+    GROUP BY department_id;
+
+USE emsDB;
+SELECT department_id, salary
+    FROM role;
+
+USE emsDB;
+SELECT e.id AS 'Employee ID', d.name AS 'Department', d.id AS 'Department ID', r.title AS 'Title', r.salary AS 'Salary'
+    FROM employee e
+        JOIN Role r ON e.role_id = r.id
+        JOIN Department d ON d.id = r.department_id
+    ORDER BY d.id ASC;
+
+USE emsDB;
+select role_id from employee;
+
+USE emsDB;
+SELECT d.name AS 'Department', CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', r.title, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
+    FROM employee e
+        LEFT JOIN employee m ON m.id = e.manager_id
+        JOIN Role r ON e.role_id = r.id
+        JOIN Department d ON d.id = r.department_id
+    ORDER BY d.name ASC;
+
+USE emsDB;
+SELECT role_id, COUNT(role_id)
+    FROM employee
+    GROUP BY role_id
+    HAVING COUNT(role_id) > 0;
+
+
+SELECT 
+    email, 
+    COUNT(email)
+FROM
+    contacts
+GROUP BY email
+HAVING COUNT(email) > 1;
+
+-- ------------------------
+-- UTILITY QUERIES
+-- ------------------------
+
 -- queries for addEmployee()
 USE emsDB;
 SELECT e.id, e.first_name, e.last_name
@@ -82,6 +135,11 @@ SELECT r.id, r.title
     FROM role r
     ORDER BY r.title ASC;
 
+-- queries for addDepartment()
+USE emsDB;
+SELECT d.id, d.name
+        FROM department d
+        ORDER BY d.name ASC;
 
 -- removeEmployee
 USE emsDB;
@@ -137,7 +195,7 @@ DELETE FROM employee where id = ?;
 -- ------------------------
 
 -- beginning of überquery
--- SELECT e.first_name, e.last_name, r.title, d.name, r.salary, e.manager_id FROM employee as e, role as r, departmend as d WHERE 
+-- SELECT e.first_name, e.last_name, r.title, d.name, r.salary, e.manager_id FROM employee as e, role as r, department as d WHERE 
 
 -- ALL EMPLOYEES >> this is the goal table output from console.table
 -- 2 John, Doe, Sales Lead, Sales, 100000, Ashley Rodriguez

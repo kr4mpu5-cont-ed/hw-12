@@ -47,12 +47,12 @@ const addEmployee = (first, last, roleid, managerid) => {
     return `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${first}', '${last}', ${roleid}, ${managerid});`;
 };
 
-const addDepartment = () => {
-    return `not implemented`;
+const addDepartment = (name) => {
+    return `INSERT INTO department (name) VALUES ('${name}');`;
 };
 
-const addRole = () => {
-    return `not implemented`;
+const addRole = (title, salary, departmentid) => {
+    return `INSERT INTO role (title, salary, department_id) VALUES ('${title}', '${salary}', '${departmentid}');`;
 };
 
 const updateEmployeeRole = () => {
@@ -83,8 +83,15 @@ const utilGetEmployeeIdsNames = () => {
 
 const utilGetRoleIdsTitles = () => {
     return `SELECT r.id, r.title
-        FROM role r
-        ORDER BY r.title ASC;`;
+            FROM role r
+            ORDER BY r.title ASC;`;
+};
+
+const utilGetDepartmentIdsNames = () => {
+    return `SELECT d.id, d.name
+            FROM department d
+            ORDER BY d.name ASC;
+    `;
 };
 
 exports.viewEmployees = viewEmployees;
@@ -107,3 +114,4 @@ exports.removeRole = removeRole;
 
 exports.utilGetEmployeeIdsNames = utilGetEmployeeIdsNames;
 exports.utilGetRoleIdsTitles = utilGetRoleIdsTitles;
+exports.utilGetDepartmentIdsNames = utilGetDepartmentIdsNames;
