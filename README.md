@@ -14,7 +14,7 @@ Assignment: Architect and build a solution for managing a company's employees us
 * The command-line application should allow users to:
   * [x] Update employee managers
   * [x] View employees by manager
-  * [~] Delete departments, roles, and employees
+  * [ ] Delete departments, roles, and employees
   * [ ] View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 
 ## Submission on BCS
