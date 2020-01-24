@@ -4,8 +4,8 @@ const viewEmployees = () => {
     return `SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name, r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
             FROM employee e
                 LEFT JOIN employee m ON m.id = e.manager_id
-                JOIN Role r ON e.role_id = r.id
-                JOIN Department d ON d.id = r.department_id
+                LEFT JOIN Role r ON e.role_id = r.id
+                LEFT JOIN Department d ON d.id = r.department_id
             ORDER BY e.id ASC;`;
 };
 

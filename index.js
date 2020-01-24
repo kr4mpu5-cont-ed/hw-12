@@ -370,7 +370,7 @@ function updateEmployeeRole() {
     connection.query(sqlqueries.updateEmployeeRole(employeeIdToUpdate, newRoleId), function (err, results) {
       if (err) throw err;
       console.log('The role for ' + answer.selectedEmployee + ' has been changed to ' + answer.selectedRole + '.');
-      start();
+      init();
     });
   });
 }
@@ -404,7 +404,7 @@ function updateEmployeeManager() {
     connection.query(sqlqueries.updateEmployeeManager(newManagerId, employeeIdToUpdate), function (err, results) {
       if (err) throw err;
       console.log('The manager for ' + answer.selectedEmployee + ' has been changed to ' + answer.selectedManager + '.');
-      start();
+      init();
     });
   });
 }
@@ -432,11 +432,11 @@ function removeEmployee() {
 // todo: implement
 function removeDepartment() {
   console.log('removeDepartment() not implemented.');
-  start();
+  start(); // after implementation change to init()
 }
 
 // todo: implement
 function removeRole() {
   console.log('removeRole() not implemented.');
-  start();
+  start(); // after implementation change to init()
 }

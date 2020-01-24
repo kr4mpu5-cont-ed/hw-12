@@ -49,8 +49,8 @@ USE emsDB;
 SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name AS 'Department', r.title, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
     FROM employee e
         LEFT JOIN employee m ON m.id = e.manager_id
-        JOIN Role r ON e.role_id = r.id
-        JOIN Department d ON d.id = r.department_id
+        LEFT JOIN Role r ON e.role_id = r.id
+        LEFT JOIN Department d ON d.id = r.department_id
     ORDER BY e.id ASC;
 
 -- viewAllEmployeesByDepartment
@@ -166,7 +166,7 @@ SELECT d.id, d.name
 
 -- removeEmployee
 USE emsDB;
-DELETE FROM employee where id = ?;
+-- DELETE FROM employee where id = ?;
 
 
 -- updateEmployeeRole
@@ -210,8 +210,13 @@ DELETE FROM employee where id = ?;
 
 -- USE emsDB;
 -- DELETE FROM role where id = 3;
--- DELETE FROM role where id = 4;
+-- DELETE FROM role where id = 9;
 
+use emsDB; select * from department;
+use emsDB; select * from role;
+-- use emsDB; DELETE FROM role where id = 9;
+use emsDB; select * from role;
+use emsdb; select * from employee;
 
 -- ------------------------
 -- RAW DATA FOR REFERENCE
