@@ -19,3 +19,6 @@ Assignment: Architect and build a solution for managing a company's employees us
 
 ## Submission on BCS
 * [x] The URL of the GitHub repository
+
+## ERR
+![ERR diagram](documentation/err/hw-12_emsDB_err.gif "ERR diagram")
