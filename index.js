@@ -28,12 +28,12 @@ console.log(`,-----------------------------------------------------.
 //#endregion
 
 //#region globals
-let roleList = [];
-let roleListObj = {};
-let employeeList = [];
-let employeeListObj = {};
-let departmentList = [];
-let departmentListObj = {};
+let roleList;
+let roleListObj;
+let employeeList;
+let employeeListObj;
+let departmentList;
+let departmentListObj;
 
 function findRoleId(namedKey, objArray) {
   for (var i = 0; i < objArray.length; i++) {
@@ -77,6 +77,14 @@ connection.connect(function (err) {
 // todo: rename to populate lists? refresh lists?
 // populate lists
 function init() {
+  
+  roleList = [];
+  roleListObj = {};
+  employeeList = [];
+  employeeListObj = {};
+  departmentList = [];
+  departmentListObj = {};
+
   connection.query(sqlqueries.utilGetRoleIdsTitles(), function (err, results) {
     if (err) throw err;
     for (let i = 0; i < results.length; i++) {
@@ -431,12 +439,42 @@ function removeEmployee() {
 
 // todo: implement
 function removeDepartment() {
-  console.log('removeDepartment() not implemented.');
-  start(); // after implementation change to init()
+  inquirer.prompt([
+    {
+      message: "Which department do you want to remove?",
+      name: "removeDepartment",
+      type: "list",
+      choices: departmentList
+    }
+  ]).then(function (answer) {
+    console.log(answer.removeDepartment);
+    var removeDepartmentId = findDepartmentId(answer.removeDepartment, departmentListObj).id;
+    console.log(removeDepartmentId);
+    connection.query(sqlqueries.removeDepartment(removeDepartmentId), function (err, results) {
+      if (err) throw err;
+      console.log(answer.removeDepartment + ' was removed from the database.')
+      init();
+    });
+  });
 }
 
 // todo: implement
 function removeRole() {
-  console.log('removeRole() not implemented.');
-  start(); // after implementation change to init()
+  inquirer.prompt([
+    {
+      message: "Which role do you want to remove?",
+      name: "removeRole",
+      type: "list",
+      choices: roleList
+    }
+  ]).then(function (answer) {
+    console.log(answer.removeRole);
+    var removeRoleId = findRoleId(answer.removeRole, roleListObj).id;
+    console.log(removeRoleId);
+    connection.query(sqlqueries.removeRole(removeRoleId), function (err, results) {
+      if (err) throw err;
+      console.log(answer.removeRole + ' was removed from the database.')
+      init();
+    });
+  });
 }

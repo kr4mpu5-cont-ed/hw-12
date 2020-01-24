@@ -1,7 +1,7 @@
 // todo: Could a constructor const or a class be helpful for organizing these?
 
 const viewEmployees = () => {
-    return `SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name, r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
+    return `SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name AS 'Department', r.title AS 'Title', r.salary AS 'Salary', CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
             FROM employee e
                 LEFT JOIN employee m ON m.id = e.manager_id
                 LEFT JOIN Role r ON e.role_id = r.id
@@ -78,12 +78,12 @@ const removeEmployee = (employeeid) => {
     return `DELETE FROM employee where id = ${employeeid};`;
 };
 
-const removeDepartment = () => {
-    return `not implemented`;
+const removeDepartment = (removeDepartmentId) => {
+    return `DELETE FROM department where id = ${removeDepartmentId};`;
 };
 
-const removeRole = () => {
-    return `not implemented`;
+const removeRole = (removeRoleId) => {
+    return `DELETE FROM role where id = ${removeRoleId};`;
 };
 
 const utilGetEmployeeIdsNames = () => {

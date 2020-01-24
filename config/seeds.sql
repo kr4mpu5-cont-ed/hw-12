@@ -181,7 +181,30 @@ USE emsDB;
 
 
 -- ------------------------
--- UTILITY QUERIES
+-- REMOVE QUERIES
+-- ------------------------
+
+-- queries for addEmployee()
+USE emsDB;
+
+-- USE emsDB;
+-- DELETE FROM role where id = 3;
+-- DELETE FROM role where id = 9;
+
+use emsDB; select * from role;
+use emsdb; select * from employee;
+use emsdb; select * from department;
+-- use emsDB; DELETE FROM role where id = 9;
+-- use emsDB; DELETE FROM department where id = 6;
+use emsDB; select * from role;
+use emsdb; select * from employee;
+use emsdb; select * from department;
+
+
+
+
+-- ------------------------
+-- SCRATCH
 -- ------------------------
 
 -- USE emsDB;
@@ -208,15 +231,6 @@ USE emsDB;
 -- USE emsDB;
 -- SELECT role.department_id, department.name FROM role, department WHERE role.department_id = department.id;
 
--- USE emsDB;
--- DELETE FROM role where id = 3;
--- DELETE FROM role where id = 9;
-
-use emsDB; select * from department;
-use emsDB; select * from role;
--- use emsDB; DELETE FROM role where id = 9;
-use emsDB; select * from role;
-use emsdb; select * from employee;
 
 -- ------------------------
 -- RAW DATA FOR REFERENCE
@@ -259,3 +273,17 @@ use emsdb; select * from employee;
 -- 6 Sarah, Lourd
 -- 7 Tom, Allen
 -- 8 Christian, Eckenrode
+
+-- USE emsDB;
+-- UPDATE role r
+--     SET
+--         r.title = 'Chief Data Scientist'
+--     WHERE
+--         r.id = 12;
+
+-- USE emsdb; SELECT * FROM role;
+
+USE emsdb;
+SELECT r.id, r.title
+            FROM role r
+            ORDER BY r.title ASC;
